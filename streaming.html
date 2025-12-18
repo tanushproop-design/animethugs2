@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeThugs</title>
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --panel: #0f1523;
+      --card: #121828;
+      --text: #eaf2fb;
+      --muted: #9fb0c2;
+      --brand: #5ac8fa;
+      --accent: #7c5cfc;
+      --primary-bg: linear-gradient(135deg, var(--accent), var(--brand));
+      --primary-color: #071022;
+      --secondary-bg: rgba(255, 255, 255, 0.04);
+      --secondary-color: var(--text);
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 100px;
+    }
+
+    html {
+  scroll-behavior: smooth;
+}
+
+
+.navbar {
+  position: fixed;        /* keeps navbar fixed */
+  top: 0;                 /* stick to top */
+  left: 50%;              /* center horizontally */
+  transform: translateX(-50%);
+  z-index: 1000;          /* ensure it stays above other content */
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel);
+  padding: 12px 20px;
+  border-radius: 20px;
+  margin: 0 auto;         /* remove margin so it doesn’t shift */
+  width: 85%;
+  box-shadow: 0 0 12px rgba(124, 92, 252, 0.25),
+              0 0 24px rgba(90, 200, 250, 0.15);
+  border: 2px solid rgba(124, 92, 252, 0.4);
+}
+
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 20px;
+  background: var(--secondary-bg);
+  padding: 6px 12px;
+  border-radius: 12px;
+  transition: background 0.3s, transform 0.3s;
+}
+.profile:hover {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.05);
+}
+.profile img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.profile span {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.site-name {
+  font-size: 22px;
+  font-weight: bold;
+  background: var(--primary-bg);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 10px;
+}
+
+.navbar-center {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+}
+.navbar-center a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  margin-right: 20px;
+  padding: 6px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(55, 121, 151, 0.4);
+  background: var(--secondary-bg);
+  transition: all 0.3s;
+}
+.navbar-center a:hover {
+  color: var(--brand);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  background: rgba(255,255,255,0.08);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--brand);
+  background: var(--secondary-bg);
+  color: var(--text);
+  outline: none;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+.search-bar::placeholder {
+  color: var(--muted);
+}
+.search-bar:focus {
+  box-shadow: 0 0 10px var(--accent);
+  border: 1px solid var(--accent);
+}
+
+
+    /* Profile dropdown */
+    .profile-info {
+      display: none;
+      position: absolute;
+      top: 70px;
+      left: 40px;
+      background-color: var(--card);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .profile-info p {
+      margin: 5px 0;
+      color: var(--text);
+    }
+
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
+  border-radius: 20px;
+  margin: 20px auto;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease-in-out;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1; /* ensure active slide is above others */
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* makes video fill the banner */
+  border-radius: 20px; /* keeps rounded corners consistent */
+  z-index: 0;          /* ensures overlay and arrows stay clickable */
+}
+
+
+.hero-overlay {
+  position: absolute;
+  bottom: 20px;   /* push content to bottom */
+  right: 20px;    /* push content to right */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* align text/button to the right */
+  text-align: right;
+  color: var(--text);
+  z-index: 2; /* keep above video */
+}
+
+
+
+.hero-overlay h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.watch-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary-bg);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.watch-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px var(--accent);
+}
+
+/* Arrows */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: var(--text);
+  font-size: 2rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s;
+  z-index: 3; /* arrows above everything */
+}
+
+.arrow:hover {
+    background: rgba(0,0,0,0.6);
+}
+.arrow.left { left: 20px; }
+.arrow.right { right: 20px; }
+
+
+.watch-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary-bg);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.watch-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* Sections */
+.anime-section {
+  margin: 40px auto;
+  width: 90%;
+}
+
+.anime-section h2 {
+  margin-bottom: 15px;
+  color: var(--brand);
+}
+
+.card-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.anime-card {
+  position: relative; /* allows absolute positioning inside */
+  flex: 1 1 150px;
+  min-width: 150px;
+  height: 200px;
+  background: var(--card);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.anime-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* Watch button hidden by default */
+.anime-card .watch-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Show button on hover */
+.anime-card:hover .watch-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.show-more {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--secondary-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.show-more:hover {
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 8px var(--brand);
+}
+
+.anime-section,
+.hero-carousel {
+  scroll-margin-top: 200px; /* adjust until section sits mid-screen */
+}
+
+.search-bar {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(124, 92, 252, 0.4);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+
+.search-bar::placeholder {
+  color: var(--muted);
+}
+
+.search-bar:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+    width: 100%;
+    margin-bottom: 10px;
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .navbar-right {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+/* Hide hamburger on desktop */
+.hamburger { 
+    display: block; /* show hamburger */ 
+    font-size: 1.8rem; 
+    background: none; 
+    border: none; 
+    color: var(--text); 
+    cursor: pointer; } 
+/* Mobile menu hidden by default */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;   /* off-screen */
+  width: 70%;
+  height: 100%;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+.mobile-menu a {
+  padding: 15px 20px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+.mobile-menu a:hover {
+  background: rgba(124, 92, 252, 0.2);
+}
+
+/* Responsive rules */
+@media (max-width: 768px) {
+  .navbar-center {
+    display: none;   /* hide desktop links */
+  }
+  .hamburger {
+    display: block;  /* show hamburger */
+  }
+}
+
+.mobile-menu {
+  left: -100%;   /* hidden */
+}
+.mobile-menu.open {
+  left: 0;       /* visible */
+}
+
+.logo_mobile {
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    background: var(--primary-bg);
+    background-clip: text;
+
+}
+
+
+
+  </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+        <div class="profile" onclick="toggleProfile()">
+            <img src="https://via.placeholder.com/35" alt="Avatar">
+            <span id="username">Guest</span>
+        </div>
+        <div class="site-name">
+            <a href="#">AnimeThugs</a>
+        </div>
+        </div>
+    
+        <div class="navbar-center">
+        <a href="#Hero">Home</a>
+        <a href="#New">New Anime</a>
+        <a href="#Popular">Popular</a>
+        <a href="#MyList">My List</a>
+        <a href="#Romance">Romance</a>
+        <a href="#Movies">Movies</a>
+        </div>
+    
+        <div class="navbar-right">
+        <input type="text" class="search-bar" placeholder="Search anime...">
+        <button class="hamburger">☰</button>
+        </div>
+    </div>
+
+<!-- Mobile menu -->
+<div class="mobile-menu">
+  <a href="#" class="logo_mobile">ANIMETHUGS</a>
+  <a href="#Home">Home</a>
+  <a href="#Popular">Popular</a>
+  <a href="#New">New Anime</a>
+  <a href="#MyList">My List</a>
+  <a href="#Romance">Romance</a>
+  <a href="#Movies">Movies</a>
+</div>
+
+  <!-- Profile Info -->
+  <div class="profile-info" id="profileInfo">
+    <p><strong>Username:</strong> Guest</p>
+    <p><strong>Email:</strong> guest@example.com</p>
+    <p><a href="#">Settings</a></p>
+  </div>
+
+    </div>
+    <div>
+
+<!-- Hero Video Carousel -->
+<section id="Hero" class="hero-carousel">
+  <div class="hero-slide active">
+    <video autoplay muted loop class="hero-video">
+      <source src="anime-banner1.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <h1>Demon Slayer</h1>
+      <button class="watch-btn">▶ Watch Now</button>
+    </div>
+  </div>
+
+  <div class="hero-slide">
+    <video autoplay muted loop class="hero-video">
+      <source src="anime-banner2.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <h1>Jujutsu Kaisen</h1>
+      <button class="watch-btn">▶ Watch Now</button>
+    </div>
+  </div>
+
+  <div class="hero-slide">
+    <video autoplay muted loop class="hero-video">
+      <source src="anime-banner3.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <h1>Naruto</h1>
+      <button class="watch-btn">▶ Watch Now</button>
+    </div>
+  </div>
+
+
+<!-- Arrow Controls -->
+<button class="arrow left">❮</button>
+<button class="arrow right">❯</button>
+
+</section>
+
+
+<!-- Sections -->
+<section id="Popular" class="anime-section">
+  <h2>Popular</h2>
+  <div class="card-row">
+    <div class="anime-card">Anime 1
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime 2
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime 3
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime 4
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+  </div>
+  <button class="show-more">Show More</button>
+</section>
+
+<section id="New" class="anime-section">
+  <h2>New Anime</h2>
+  <div class="card-row">
+    <div class="anime-card">Anime A
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime B
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime C
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Anime D
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+  </div>
+  <button class="show-more">Show More</button>
+</section>
+
+<section id="MyList" class="anime-section">
+  <h2>My List</h2>
+  <div class="card-row">
+    <div class="anime-card">Saved 1
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Saved 2
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Saved 3
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Saved 4
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+  </div>
+  <button class="show-more">Show More</button>
+</section>
+<section id="Romance" class="anime-section">
+  <h2>Romance</h2>
+  <div class="card-row">
+    <div class="anime-card">Romance 1
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Romance 2
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Romance 3
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Romance 4
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+  </div>
+  <button class="show-more">Show More</button>
+</section>
+
+<section id="Movies" class="anime-section">
+  <h2>Movies</h2>
+  <div class="card-row">
+    <div class="anime-card">Movie 1
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Movie 2
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Movie 3
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+    <div class="anime-card">Movie 4
+        <button class="watch-btn">▶ Watch</button>
+    </div>
+  </div>
+  <button class="show-more">Show More</button>
+</section>
+
+
+    </div>
+  <script>
+    function toggleProfile() {
+      const profileInfo = document.getElementById("profileInfo");
+      profileInfo.style.display = profileInfo.style.display === "block" ? "none" : "block";
+    }
+
+    // Example backend integration
+    async function loadProfile() {
+      try {
+        const response = await fetch("/api/profile");
+        const data = await response.json();
+
+        document.getElementById("username").textContent = data.username;
+        document.getElementById("profileInfo").innerHTML = `
+          <p><strong>Username:</strong> ${data.username}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><a href="#">Settings</a></p>
+        `;
+      } catch (error) {
+        console.error("Error loading profile:", error);
+      }
+    }
+
+    // Uncomment when backend is ready
+    // loadProfile();
+
+  let currentSlide = 0;
+  const slides = document.querySelectorAll(".hero-slide");
+  const leftArrow = document.querySelector(".arrow.left");
+  const rightArrow = document.querySelector(".arrow.right");
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove("active");
+      if (i === index) slide.classList.add("active");
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  leftArrow.addEventListener("click", prevSlide);
+  rightArrow.addEventListener("click", nextSlide);
+
+  // Auto swipe every 6 seconds
+  setInterval(nextSlide, 6000);
+
+
+// Mobile menu toggle
+const hamburger = document.querySelector('.hamburger');
+const mobileMenu = document.querySelector('.mobile-menu');
+
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+
+  </script>
+
+</body>
+</html>
