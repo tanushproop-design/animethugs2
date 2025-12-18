@@ -99,17 +99,30 @@
   flex: 1;
   gap: 12px;
 }
+
 .navbar-center a {
+  display: inline-block;       /* consistent box model */
   text-decoration: none;
   color: var(--text);
   font-weight: 500;
-  margin-right: 20px;
-  padding: 6px 16px;
+
+  /* Force consistent sizing */
+  font-size: 16px;             /* same font size everywhere */
+  line-height: 1.4;            /* control vertical spacing */
+  padding: 8px 16px;           /* consistent button padding */
   border-radius: 10px;
+
+  /* Reset browser quirks */
+  box-sizing: border-box;      /* padding included in width */
+  -webkit-appearance: none;    /* remove Safari default styles */
+  -moz-appearance: none;       /* remove Firefox quirks */
+  appearance: none;
+
   border: 1px solid rgba(55, 121, 151, 0.4);
   background: var(--secondary-bg);
   transition: all 0.3s;
 }
+
 .navbar-center a:hover {
   color: var(--brand);
   border-color: var(--accent);
